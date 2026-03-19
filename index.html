@@ -633,6 +633,40 @@
       cursor: pointer;
     }
 
+    .quest {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 120;
+      width: min(240px, 82vw);
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .quest-title {
+      font-family: "Cinzel", serif;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .quest-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .quest-list li.done {
+      color: var(--accent);
+      text-decoration: line-through;
+    }
+
     .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
     .pill {
       border: 1px solid var(--line);
@@ -1002,7 +1036,47 @@
     </div>
   </div>
 
+  <div class="quest" id="questLog">
+    <div class="quest-title">Quest Log</div>
+    <ul class="quest-list">
+      <li data-quest="explore">Explore all sections</li>
+      <li data-quest="project">Open a project</li>
+      <li data-quest="three">Activate three sword style</li>
+    </ul>
+  </div>
+
   <script>
+    (function () {
+      const questLog = document.getElementById('questLog');
+      if (!questLog) return;
+      const items = questLog.querySelectorAll('[data-quest]');
+      const map = {};
+      items.forEach((item) => {
+        map[item.dataset.quest] = item;
+      });
+
+      window.markQuest = (key) => {
+        const target = map[key];
+        if (target) target.classList.add('done');
+      };
+
+      const sections = document.querySelectorAll('section');
+      const visited = new Set();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            visited.add(entry.target.id);
+            if (visited.size === sections.length) {
+              window.markQuest('explore');
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      sections.forEach((section) => observer.observe(section));
+    })();
+
     (function () {
       const body = document.body;
       const modeToggle = document.getElementById('modeToggle');
@@ -1228,6 +1302,7 @@
           }
           modal.classList.add('active');
           modal.setAttribute('aria-hidden', 'false');
+          if (window.markQuest) window.markQuest('project');
         });
       });
 
@@ -1251,6 +1326,7 @@
         if (event.key.toLowerCase() !== 'z') return;
         overlay.classList.add('active');
         setTimeout(() => overlay.classList.remove('active'), 700);
+        if (window.markQuest) window.markQuest('three');
       });
     })();
 
