@@ -236,6 +236,8 @@
       margin: 0 auto;
     }
 
+    #scene { transition: transform 0.18s ease; }
+
     header {
       position: sticky;
       top: 0;
@@ -714,7 +716,7 @@
   </div>
   <canvas id="swordCanvas" aria-hidden="true"></canvas>
 
-  <main>
+  <main id="scene">
     <section id="home" class="hero">
       <div class="container hero-grid">
         <div>
@@ -1241,6 +1243,27 @@
           const key = chip.dataset.response;
           text.textContent = responses[key] || 'Ask about skills, projects, or experience.';
         });
+      });
+    })();
+
+    (function () {
+      const scene = document.getElementById('scene');
+      let shiftTimeout;
+      window.addEventListener('keydown', (event) => {
+        const target = event.target;
+        if (target && target.tagName && target.tagName.toLowerCase() === 'input') return;
+        const key = event.key.toLowerCase();
+        if (document.body.dataset.mode !== 'zoro') return;
+        if (key === 'w') window.scrollBy({ top: -120, behavior: 'smooth' });
+        if (key === 's') window.scrollBy({ top: 120, behavior: 'smooth' });
+        if (key === 'a' || key === 'd') {
+          const offset = key === 'a' ? 12 : -12;
+          scene.style.transform = `translateX(${offset}px)`;
+          clearTimeout(shiftTimeout);
+          shiftTimeout = setTimeout(() => {
+            scene.style.transform = 'translateX(0)';
+          }, 180);
+        }
       });
     })();
   </script>
