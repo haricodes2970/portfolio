@@ -234,6 +234,13 @@
       display: none;
     }
 
+    body[data-mode="calm"] .cursor-dot,
+    body[data-mode="calm"] .cursor-trail,
+    body[data-mode="calm"] .slash-overlay,
+    body[data-mode="calm"] .three-sword {
+      display: none;
+    }
+
     @keyframes slash {
       0% { transform: translateX(-120%) rotate(-8deg); opacity: 0; }
       30% { opacity: 1; }
