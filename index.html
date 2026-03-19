@@ -95,6 +95,9 @@
 
     .nav-links a:hover { color: var(--accent); }
 
+    .nav-actions { display: flex; gap: 10px; }
+    .btn.small { padding: 8px 12px; font-size: 0.65rem; }
+
     .hero {
       position: relative;
       min-height: 92vh;
@@ -305,6 +308,9 @@
         <a href="#hobbies">hobbies</a>
         <a href="#contact">contact</a>
       </nav>
+      <div class="nav-actions">
+        <button class="btn small" id="modeToggle" type="button">Calm Mode</button>
+      </div>
     </div>
   </header>
 
@@ -519,5 +525,29 @@
   <footer>
     Built by Srihari Prasad - Zoro themed portfolio
   </footer>
+
+  <script>
+    (function () {
+      const body = document.body;
+      const modeToggle = document.getElementById('modeToggle');
+      const savedMode = localStorage.getItem('mode');
+      if (savedMode === 'zoro' || savedMode === 'calm') {
+        body.dataset.mode = savedMode;
+      }
+
+      function syncModeLabel() {
+        const mode = body.dataset.mode || 'zoro';
+        modeToggle.textContent = mode === 'zoro' ? 'Calm Mode' : 'Zoro Mode';
+      }
+
+      syncModeLabel();
+      modeToggle.addEventListener('click', () => {
+        const nextMode = body.dataset.mode === 'zoro' ? 'calm' : 'zoro';
+        body.dataset.mode = nextMode;
+        localStorage.setItem('mode', nextMode);
+        syncModeLabel();
+      });
+    })();
+  </script>
 </body>
 </html>
