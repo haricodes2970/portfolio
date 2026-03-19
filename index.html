@@ -47,7 +47,8 @@
     }
 
     body[data-mode="zoro"] { cursor: none; }
-    body[data-mode="calm"] { cursor: auto; }
+    body[data-mode="calm"],
+    body.low-perf { cursor: auto; }
 
     body.slash-active .slash-overlay {
       animation: slash 0.6s ease-out forwards;
@@ -202,6 +203,11 @@
         display: none;
       }
       body[data-mode=\"zoro\"] { cursor: auto; }
+    }
+
+    body.low-perf .cursor-dot,
+    body.low-perf .cursor-trail {
+      display: none;
     }
 
     @keyframes slash {
@@ -602,6 +608,7 @@
       </nav>
       <div class="nav-actions">
         <button class="btn small" id="modeToggle" type="button">Calm Mode</button>
+        <button class="btn small" id="perfToggle" type="button">Performance</button>
       </div>
     </div>
   </header>
@@ -900,9 +907,14 @@
     (function () {
       const body = document.body;
       const modeToggle = document.getElementById('modeToggle');
+      const perfToggle = document.getElementById('perfToggle');
       const savedMode = localStorage.getItem('mode');
+      const savedPerf = localStorage.getItem('perf');
       if (savedMode === 'zoro' || savedMode === 'calm') {
         body.dataset.mode = savedMode;
+      }
+      if (savedPerf === 'low') {
+        body.classList.add('low-perf');
       }
 
       function syncModeLabel() {
@@ -910,12 +922,23 @@
         modeToggle.textContent = mode === 'zoro' ? 'Calm Mode' : 'Zoro Mode';
       }
 
+      function syncPerfLabel() {
+        perfToggle.textContent = body.classList.contains('low-perf') ? 'Perf: Low' : 'Performance';
+      }
+
       syncModeLabel();
+      syncPerfLabel();
       modeToggle.addEventListener('click', () => {
         const nextMode = body.dataset.mode === 'zoro' ? 'calm' : 'zoro';
         body.dataset.mode = nextMode;
         localStorage.setItem('mode', nextMode);
         syncModeLabel();
+      });
+
+      perfToggle.addEventListener('click', () => {
+        body.classList.toggle('low-perf');
+        localStorage.setItem('perf', body.classList.contains('low-perf') ? 'low' : 'high');
+        syncPerfLabel();
       });
     })();
 
