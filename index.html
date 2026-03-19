@@ -197,6 +197,21 @@
       100% { opacity: 0; transform: translate(-50%, -50%) rotate(45deg) scaleX(1.2); }
     }
 
+    #swordCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 90;
+      mix-blend-mode: screen;
+    }
+
+    body[data-mode="calm"] #swordCanvas,
+    body.low-perf #swordCanvas {
+      display: none;
+    }
+
     @media (pointer: coarse) {
       .cursor-dot,
       .cursor-trail {
@@ -638,6 +653,7 @@
   <div class="three-sword" id="threeSword" aria-hidden="true">
     <span></span><span></span><span></span>
   </div>
+  <canvas id="swordCanvas" aria-hidden="true"></canvas>
 
   <main>
     <section id="home" class="hero">
@@ -1021,6 +1037,40 @@
         document.body.appendChild(slash);
         setTimeout(() => slash.remove(), 300);
       });
+    })();
+
+    (function () {
+      const canvas = document.getElementById('swordCanvas');
+      const ctx = canvas.getContext('2d');
+      let last = null;
+      let current = null;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      window.addEventListener('mousemove', (event) => {
+        current = { x: event.clientX, y: event.clientY };
+      });
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (document.body.dataset.mode === 'zoro' && !document.body.classList.contains('low-perf') && current && last) {
+          ctx.strokeStyle = 'rgba(34, 197, 94, 0.6)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(last.x, last.y);
+          ctx.lineTo(current.x, current.y);
+          ctx.stroke();
+        }
+        last = current;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
     })();
 
     (function () {
