@@ -728,6 +728,7 @@
       <div class="nav-actions">
         <button class="btn small" id="modeToggle" type="button">Calm Mode</button>
         <button class="btn small" id="perfToggle" type="button">Performance</button>
+        <button class="btn small" id="voiceToggle" type="button">Voice Off</button>
       </div>
     </div>
   </header>
@@ -1081,8 +1082,11 @@
       const body = document.body;
       const modeToggle = document.getElementById('modeToggle');
       const perfToggle = document.getElementById('perfToggle');
+      const voiceToggle = document.getElementById('voiceToggle');
       const savedMode = localStorage.getItem('mode');
       const savedPerf = localStorage.getItem('perf');
+      const savedVoice = localStorage.getItem('voice');
+      let voiceEnabled = savedVoice === 'on';
       if (savedMode === 'zoro' || savedMode === 'calm') {
         body.dataset.mode = savedMode;
       }
@@ -1099,8 +1103,22 @@
         perfToggle.textContent = body.classList.contains('low-perf') ? 'Perf: Low' : 'Performance';
       }
 
+      function syncVoiceLabel() {
+        voiceToggle.textContent = voiceEnabled ? 'Voice On' : 'Voice Off';
+      }
+
+      function speak(text) {
+        if (!('speechSynthesis' in window)) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 0.8;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      }
+
       syncModeLabel();
       syncPerfLabel();
+      syncVoiceLabel();
       modeToggle.addEventListener('click', () => {
         const nextMode = body.dataset.mode === 'zoro' ? 'calm' : 'zoro';
         body.dataset.mode = nextMode;
@@ -1112,6 +1130,15 @@
         body.classList.toggle('low-perf');
         localStorage.setItem('perf', body.classList.contains('low-perf') ? 'low' : 'high');
         syncPerfLabel();
+      });
+
+      voiceToggle.addEventListener('click', () => {
+        voiceEnabled = !voiceEnabled;
+        localStorage.setItem('voice', voiceEnabled ? 'on' : 'off');
+        syncVoiceLabel();
+        if (voiceEnabled) {
+          speak('Welcome to my domain');
+        }
       });
     })();
 
