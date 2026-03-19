@@ -563,6 +563,65 @@
       text-transform: uppercase;
     }
 
+    .assistant {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .assistant-btn {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .assistant-panel {
+      display: none;
+      width: min(320px, 86vw);
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .assistant-panel.active { display: block; }
+
+    .assistant-title {
+      font-family: "Cinzel", serif;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .assistant-text {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .assistant-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .assistant-chip {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 6px 8px;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
     .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
     .pill {
       border: 1px solid var(--line);
@@ -919,6 +978,19 @@
     </div>
   </div>
 
+  <div class="assistant" id="assistant">
+    <button class="assistant-btn" id="assistantToggle" type="button">Ask about me</button>
+    <div class="assistant-panel" id="assistantPanel">
+      <div class="assistant-title">Assistant</div>
+      <div class="assistant-text" id="assistantText">Ask about skills, projects, or experience.</div>
+      <div class="assistant-actions">
+        <button class="assistant-chip" type="button" data-response="skills">Skills</button>
+        <button class="assistant-chip" type="button" data-response="projects">Projects</button>
+        <button class="assistant-chip" type="button" data-response="experience">Experience</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function () {
       const body = document.body;
@@ -1147,6 +1219,28 @@
         if (event.key.toLowerCase() !== 'z') return;
         overlay.classList.add('active');
         setTimeout(() => overlay.classList.remove('active'), 700);
+      });
+    })();
+
+    (function () {
+      const toggle = document.getElementById('assistantToggle');
+      const panel = document.getElementById('assistantPanel');
+      const text = document.getElementById('assistantText');
+      const responses = {
+        skills: 'Frontend UI, backend systems, and AI tooling. Santoryu for UI and Haki for systems.',
+        projects: 'Battle log includes BookYourEvent, Picy, Medical Chatbot, and VTU Smart Scheduler.',
+        experience: 'AI and ML undergrad focused on shipping real-world full-stack products.'
+      };
+
+      toggle.addEventListener('click', () => {
+        panel.classList.toggle('active');
+      });
+
+      panel.querySelectorAll('.assistant-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const key = chip.dataset.response;
+          text.textContent = responses[key] || 'Ask about skills, projects, or experience.';
+        });
       });
     })();
   </script>
