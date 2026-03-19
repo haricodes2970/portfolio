@@ -411,6 +411,22 @@
     .cert-title { font-family: "Cinzel", serif; font-size: 1.1rem; margin-bottom: 8px; }
     .cert-meta { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
 
+    .project-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .project-card { position: relative; cursor: pointer; }
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-left: 3px solid var(--accent);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .project-card:hover::before { opacity: 1; }
+    .project-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+    .project-diff { color: var(--accent); font-weight: 600; }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .project-stack span { border: 1px solid var(--line); padding: 4px 8px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
     .modal {
       position: fixed;
       inset: 0;
@@ -615,22 +631,46 @@
         </div>
         <div class="arc-title">Battle Arc</div>
         <div class="arc-quote">Missions completed under pressure.</div>
-        <div class="grid-2">
-          <div class="card">
+        <div class="project-grid">
+          <div class="card project-card" data-title="BookYourEvent" data-desc="Three role MERN platform with payments, chat, dashboards, and booking workflows." data-stack="MongoDB,Express,React,Node,Razorpay,Cloudinary,JWT" data-diff="High" data-link="https://bookyourevent.netlify.app">
+            <div class="project-meta">
+              <span>Mission</span><span class="project-diff">High</span><span>2026</span>
+            </div>
             <h3>BookYourEvent</h3>
-            <p>High difficulty mission. Three role MERN platform with payments, chat, and dashboards.</p>
+            <p>Three role MERN platform with payments, chat, dashboards, and booking workflows.</p>
+            <div class="project-stack">
+              <span>MongoDB</span><span>Express</span><span>React</span><span>Node</span>
+            </div>
           </div>
-          <div class="card">
+          <div class="card project-card" data-title="Picy" data-desc="Instant image and text sharing app with Cloudinary, PWA support, and analytics." data-stack="React,Vite,Node,Express,MongoDB,Cloudinary" data-diff="Medium" data-link="https://picy.netlify.app">
+            <div class="project-meta">
+              <span>Mission</span><span class="project-diff">Medium</span><span>2026</span>
+            </div>
             <h3>Picy</h3>
-            <p>Fast build mission. Instant image and text sharing app with Cloudinary and PWA support.</p>
+            <p>Instant image and text sharing app with Cloudinary, PWA support, and analytics.</p>
+            <div class="project-stack">
+              <span>React</span><span>Node</span><span>Cloudinary</span><span>PWA</span>
+            </div>
           </div>
-          <div class="card">
+          <div class="card project-card" data-title="Medical Chatbot" data-desc="RAG powered medical assistant focused on accurate, context aware responses." data-stack="Python,LLM,RAG,NLP" data-diff="High" data-link="">
+            <div class="project-meta">
+              <span>Mission</span><span class="project-diff">High</span><span>In progress</span>
+            </div>
             <h3>Medical Chatbot</h3>
-            <p>In progress. RAG powered medical assistant with domain focused responses.</p>
+            <p>RAG powered medical assistant focused on accurate, context aware responses.</p>
+            <div class="project-stack">
+              <span>Python</span><span>LLM</span><span>RAG</span><span>NLP</span>
+            </div>
           </div>
-          <div class="card">
+          <div class="card project-card" data-title="VTU Smart Scheduler" data-desc="AI chatbot to query exam schedules and send updates in natural language." data-stack="Python,LLM,NLP,RAG" data-diff="Medium" data-link="">
+            <div class="project-meta">
+              <span>Mission</span><span class="project-diff">Medium</span><span>In progress</span>
+            </div>
             <h3>VTU Smart Scheduler</h3>
-            <p>In progress. AI chatbot for exam schedule queries and alerts.</p>
+            <p>AI chatbot to query exam schedules and send updates in natural language.</p>
+            <div class="project-stack">
+              <span>Python</span><span>LLM</span><span>NLP</span><span>RAG</span>
+            </div>
           </div>
         </div>
       </div>
@@ -735,6 +775,20 @@
     </div>
   </div>
 
+  <div class="modal" id="projectModal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-head">
+        <div class="modal-title" id="projectModalTitle">Project</div>
+        <button class="modal-close" type="button" id="projectModalClose">Close</button>
+      </div>
+      <p id="projectModalDesc" class="cert-meta"></p>
+      <div class="project-stack" id="projectModalStack"></div>
+      <div style="margin-top: 16px;">
+        <a class="btn" id="projectModalLink" href="#" target="_blank" rel="noopener">Open Mission</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function () {
       const body = document.body;
@@ -811,6 +865,45 @@
         card.addEventListener('click', () => {
           title.textContent = card.dataset.title || 'Certificate';
           desc.textContent = card.dataset.desc || '';
+          modal.classList.add('active');
+          modal.setAttribute('aria-hidden', 'false');
+        });
+      });
+
+      function closeModal() {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeModal();
+      });
+    })();
+
+    (function () {
+      const modal = document.getElementById('projectModal');
+      const title = document.getElementById('projectModalTitle');
+      const desc = document.getElementById('projectModalDesc');
+      const stack = document.getElementById('projectModalStack');
+      const link = document.getElementById('projectModalLink');
+      const closeBtn = document.getElementById('projectModalClose');
+
+      document.querySelectorAll('.project-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          title.textContent = card.dataset.title || 'Project';
+          desc.textContent = card.dataset.desc || '';
+          const stackItems = (card.dataset.stack || '').split(',').filter(Boolean);
+          stack.innerHTML = stackItems.map((item) => `<span>${item}</span>`).join('');
+          if (card.dataset.link) {
+            link.href = card.dataset.link;
+            link.style.display = 'inline-block';
+          } else {
+            link.style.display = 'none';
+          }
           modal.classList.add('active');
           modal.setAttribute('aria-hidden', 'false');
         });
