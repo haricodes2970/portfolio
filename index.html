@@ -729,6 +729,7 @@
         <button class="btn small" id="modeToggle" type="button">Calm Mode</button>
         <button class="btn small" id="perfToggle" type="button">Performance</button>
         <button class="btn small" id="voiceToggle" type="button">Voice Off</button>
+        <button class="btn small" id="soundToggle" type="button">Sound Off</button>
       </div>
     </div>
   </header>
@@ -1083,10 +1084,13 @@
       const modeToggle = document.getElementById('modeToggle');
       const perfToggle = document.getElementById('perfToggle');
       const voiceToggle = document.getElementById('voiceToggle');
+      const soundToggle = document.getElementById('soundToggle');
       const savedMode = localStorage.getItem('mode');
       const savedPerf = localStorage.getItem('perf');
       const savedVoice = localStorage.getItem('voice');
+      const savedSound = localStorage.getItem('sound');
       let voiceEnabled = savedVoice === 'on';
+      let soundEnabled = savedSound === 'on';
       if (savedMode === 'zoro' || savedMode === 'calm') {
         body.dataset.mode = savedMode;
       }
@@ -1107,6 +1111,10 @@
         voiceToggle.textContent = voiceEnabled ? 'Voice On' : 'Voice Off';
       }
 
+      function syncSoundLabel() {
+        soundToggle.textContent = soundEnabled ? 'Sound On' : 'Sound Off';
+      }
+
       function speak(text) {
         if (!('speechSynthesis' in window)) return;
         const utterance = new SpeechSynthesisUtterance(text);
@@ -1116,9 +1124,28 @@
         window.speechSynthesis.speak(utterance);
       }
 
+      let audioCtx;
+      function playSlashSound() {
+        if (!soundEnabled) return;
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = 220;
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.21);
+      }
+      window.playSlashSound = playSlashSound;
+
       syncModeLabel();
       syncPerfLabel();
       syncVoiceLabel();
+      syncSoundLabel();
       modeToggle.addEventListener('click', () => {
         const nextMode = body.dataset.mode === 'zoro' ? 'calm' : 'zoro';
         body.dataset.mode = nextMode;
@@ -1139,6 +1166,12 @@
         if (voiceEnabled) {
           speak('Welcome to my domain');
         }
+      });
+
+      soundToggle.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('sound', soundEnabled ? 'on' : 'off');
+        syncSoundLabel();
       });
     })();
 
@@ -1235,6 +1268,7 @@
 
       window.addEventListener('click', (event) => {
         if (body.dataset.mode !== 'zoro') return;
+        if (window.playSlashSound) window.playSlashSound();
         const slash = document.createElement('div');
         slash.className = 'click-slash';
         slash.style.left = `${event.clientX}px`;
