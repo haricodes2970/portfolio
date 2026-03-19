@@ -1,434 +1,523 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>haricodes2970 ~ portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoro Themed Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --green: #00ff88;
-      --green-dim: #00cc66;
-      --green-faint: #003320;
-      --amber: #ffb300;
-      --blue: #00cfff;
-      --bg: #0a0e0a;
-      --scan: rgba(0,255,100,0.03);
+      --bg: #070a08;
+      --bg-alt: #0b120f;
+      --card: rgba(10, 18, 14, 0.7);
+      --line: rgba(80, 180, 120, 0.28);
+      --text: #e8f6ee;
+      --muted: #a7c5b4;
+      --accent: #22c55e;
+      --accent-2: #0ea96a;
+      --danger: #8b2b2b;
+      --glow: 0 0 18px rgba(34, 197, 94, 0.35);
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body[data-mode="calm"] {
+      --bg: #f7faf8;
+      --bg-alt: #ffffff;
+      --card: #ffffff;
+      --line: rgba(10, 90, 40, 0.12);
+      --text: #0f2217;
+      --muted: #3d5d4a;
+      --accent: #0f7a44;
+      --accent-2: #1a9b5c;
+      --danger: #8b2b2b;
+      --glow: none;
+      --shadow: 0 18px 48px rgba(15, 34, 23, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
-      color: var(--green);
-      font-family: 'Share Tech Mono', monospace;
+      font-family: "Space Grotesk", sans-serif;
+      background: radial-gradient(1200px 800px at 20% 0%, rgba(34, 197, 94, 0.12), transparent 60%),
+                  radial-gradient(900px 700px at 90% 10%, rgba(8, 64, 34, 0.35), transparent 70%),
+                  var(--bg);
+      color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
     }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, var(--scan) 2px, var(--scan) 4px);
-      pointer-events: none; z-index: 999;
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
     }
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
-      pointer-events: none; z-index: 998;
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(7, 10, 8, 0.9), rgba(7, 10, 8, 0.7));
+      border-bottom: 1px solid var(--line);
     }
-    @keyframes flicker { 0%,100%{opacity:1} 93%{opacity:.92} 94%{opacity:1} 96%{opacity:.97} }
-    body { animation: flicker 8s infinite; }
 
-    /* TOPBAR */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 28px;
-      border-bottom: 1px solid var(--green-faint);
-      background: rgba(0,255,136,0.04);
-      position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(2px);
+    body[data-mode="calm"] header {
+      background: rgba(255, 255, 255, 0.9);
     }
-    .topbar-left { font-family:'VT323',monospace;font-size:1.5rem;color:var(--green);text-shadow:0 0 12px var(--green);letter-spacing:1px; }
-    .topbar-left span { color:var(--amber); }
-    .topbar-nav { display:flex;gap:18px;flex-wrap:wrap; }
-    .topbar-nav a { color:var(--green-dim);text-decoration:none;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;transition:color .2s,text-shadow .2s; }
-    .topbar-nav a:hover { color:var(--green);text-shadow:0 0 8px var(--green); }
 
-    /* HERO */
-    .hero { min-height:92vh;display:flex;align-items:center;justify-content:center;padding:60px 24px; }
-    .terminal-window { width:100%;max-width:800px;border:1px solid var(--green-dim);border-radius:6px;box-shadow:0 0 40px rgba(0,255,136,.12),0 0 80px rgba(0,255,136,.05);overflow:hidden; }
-    .terminal-titlebar { background:rgba(0,255,136,.07);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--green-faint); }
-    .dot { width:12px;height:12px;border-radius:50%;background:var(--green-faint);border:1px solid var(--green-dim); }
-    .dot.active { background:var(--green);box-shadow:0 0 6px var(--green); }
-    .terminal-title { font-size:.75rem;color:var(--green-dim);margin-left:8px;letter-spacing:2px; }
-    .terminal-body { padding:32px 36px 40px;line-height:1.9; }
-    .prompt { color:var(--amber);margin-right:8px;text-shadow:0 0 6px var(--amber); }
-    .output-line { display:block;padding-left:20px;opacity:0;transform:translateY(4px);animation:fadein .4s forwards; }
-    .output-line.name-line { font-family:'VT323',monospace;font-size:3.2rem;color:var(--green);text-shadow:0 0 20px var(--green),0 0 40px rgba(0,255,136,.4);letter-spacing:2px;line-height:1.1; }
-    .output-line.tag-line { color:var(--amber);font-size:.95rem;letter-spacing:1px;text-shadow:0 0 8px var(--amber); }
-    .output-line.sub-line { color:var(--green-dim);font-size:.82rem;letter-spacing:1px; }
-    @keyframes fadein { to { opacity:1;transform:translateY(0); } }
-    .l1{animation-delay:.3s}.l2{animation-delay:.6s}.l3{animation-delay:.9s}
-    .l4{animation-delay:1.2s}.l5{animation-delay:1.5s}.l6{animation-delay:1.8s}
-    .l7{animation-delay:2.1s}.l8{animation-delay:2.4s}.l9{animation-delay:2.7s}.l10{animation-delay:3s}
-    .cursor-blink { display:inline-block;width:10px;height:1.1em;background:var(--green);vertical-align:text-bottom;animation:blink 1s step-end infinite;box-shadow:0 0 6px var(--green);margin-left:4px; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+    }
 
-    /* SECTION BASE */
-    section { padding:72px 24px;max-width:900px;margin:0 auto; }
-    .section-header { display:flex;align-items:center;gap:12px;margin-bottom:36px; }
-    .section-header::before { content:'//';color:var(--amber);font-family:'VT323',monospace;font-size:1.6rem;text-shadow:0 0 8px var(--amber); }
-    .section-header h2 { font-family:'VT323',monospace;font-size:2rem;letter-spacing:4px;text-transform:uppercase;text-shadow:0 0 12px var(--green); }
-    .section-header::after { content:'';flex:1;height:1px;background:linear-gradient(to right,var(--green-dim),transparent); }
-    section + section { border-top:1px solid var(--green-faint); }
+    .brand {
+      font-family: "Cinzel", serif;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text);
+    }
 
-    /* ABOUT */
-    .about-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px; }
-    @media(max-width:600px){.about-grid{grid-template-columns:1fr}}
-    .about-card { background:rgba(0,255,136,.03);border:1px solid var(--green-faint);border-left:3px solid var(--green-dim);padding:18px 22px;transition:border-color .2s,box-shadow .2s; }
-    .about-card:hover { border-left-color:var(--green);box-shadow:0 0 20px rgba(0,255,136,.08); }
-    .card-label { color:var(--amber);font-size:.7rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px; }
-    .card-value { color:var(--green);font-size:.88rem;line-height:1.7; }
-    .about-bio { margin-top:24px;padding:22px;border:1px solid var(--green-faint);border-top:3px solid var(--green-dim);background:rgba(0,255,136,.02);font-size:.87rem;line-height:1.9;color:var(--green-dim); }
-    .about-bio .hi { color:var(--green);font-size:1rem; }
+    .brand span { color: var(--accent); }
 
-    /* SKILLS */
-    .skills-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px; }
-    .skill-block { border:1px solid var(--green-faint);padding:20px 22px;background:rgba(0,255,136,.02);transition:border-color .2s,box-shadow .2s; }
-    .skill-block:hover { border-color:var(--green-dim);box-shadow:0 0 16px rgba(0,255,136,.07); }
-    .skill-category { color:var(--amber);font-size:.7rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px; }
-    .skill-tags { display:flex;flex-wrap:wrap;gap:8px; }
-    .tag { font-size:.74rem;padding:4px 10px;border:1px solid var(--green-faint);color:var(--green-dim);letter-spacing:1px;transition:all .2s;cursor:default; }
-    .tag:hover { border-color:var(--green-dim);color:var(--green);text-shadow:0 0 6px var(--green); }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
 
-    /* PROJECTS */
-    .projects-list { display:flex;flex-direction:column;gap:20px; }
-    .project-card { border:1px solid var(--green-faint);padding:26px 28px;background:rgba(0,255,136,.02);position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s; }
-    .project-card::before { content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green-dim);transition:background .2s; }
-    .project-card:hover { border-color:var(--green-dim);box-shadow:0 0 24px rgba(0,255,136,.08); }
-    .project-card:hover::before { background:var(--green); }
-    .project-header { display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px; }
-    .project-name { font-family:'VT323',monospace;font-size:1.5rem;letter-spacing:2px;text-shadow:0 0 10px var(--green); }
-    .project-meta { display:flex;align-items:center;gap:12px;flex-wrap:wrap; }
-    .project-link { font-size:.72rem;color:var(--blue);letter-spacing:1px;text-decoration:none;border:1px solid rgba(0,207,255,.2);padding:4px 10px;transition:all .2s; }
-    .project-link:hover { border-color:var(--blue);box-shadow:0 0 8px rgba(0,207,255,.2); }
-    .project-link.wip { color:var(--amber);border-color:rgba(255,179,0,.2); }
-    .project-link.wip:hover { border-color:var(--amber);box-shadow:0 0 8px rgba(255,179,0,.2); }
-    .project-date { font-size:.7rem;color:var(--green-dim);letter-spacing:1px; }
-    .project-stack { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px; }
-    .stack-tag { font-size:.7rem;padding:3px 8px;border:1px solid var(--green-faint);color:var(--green-dim);letter-spacing:1px; }
-    .project-bullets { list-style:none;padding:0; }
-    .project-bullets li { font-size:.8rem;color:var(--green-dim);line-height:1.8;padding-left:16px;position:relative; }
-    .project-bullets li::before { content:'›';position:absolute;left:0;color:var(--amber); }
+    .nav-links a:hover { color: var(--accent); }
 
-    /* EDUCATION */
-    .edu-list { display:flex;flex-direction:column;gap:16px; }
-    .edu-card { display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;border:1px solid var(--green-faint);border-left:3px solid var(--green-dim);padding:18px 22px;background:rgba(0,255,136,.02);transition:border-color .2s; }
-    .edu-card:hover { border-left-color:var(--green); }
-    .edu-degree { color:var(--green);font-size:.9rem;margin-bottom:4px; }
-    .edu-institution { color:var(--green-dim);font-size:.8rem;letter-spacing:1px; }
-    .edu-right { text-align:right; }
-    .edu-year { color:var(--amber);font-size:.75rem;letter-spacing:1px;margin-bottom:4px; }
-    .edu-score { color:var(--green);font-size:.8rem; }
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: grid;
+      align-items: center;
+      padding: 80px 0 60px;
+    }
 
-    /* CERTIFICATIONS */
-    .cert-list { display:flex;flex-direction:column;gap:12px; }
-    .cert-item { display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border:1px solid var(--green-faint);background:rgba(0,255,136,.02);transition:border-color .2s; }
-    .cert-item:hover { border-color:var(--green-dim); }
-    .cert-icon { color:var(--amber);font-size:1rem;flex-shrink:0;margin-top:2px; }
-    .cert-name { color:var(--green);font-size:.85rem;margin-bottom:3px; }
-    .cert-note { color:var(--green-dim);font-size:.75rem;letter-spacing:1px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 40px;
+      align-items: center;
+    }
 
-    /* CONTACT */
-    .contact-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px; }
-    .contact-item { display:flex;align-items:flex-start;gap:16px;padding:20px 22px;border:1px solid var(--green-faint);background:rgba(0,255,136,.02);text-decoration:none;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden; }
-    .contact-item::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,136,.06),transparent);opacity:0;transition:opacity .3s; }
-    .contact-item:hover { border-color:var(--green-dim);box-shadow:0 0 24px rgba(0,255,136,.1); }
-    .contact-item:hover::before { opacity:1; }
-    .contact-icon { font-size:1.4rem;flex-shrink:0;margin-top:2px; }
-    .contact-label { font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:4px; }
-    .contact-value { font-size:.82rem;color:var(--green);word-break:break-all; }
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
 
-    /* FOOTER */
-    footer { text-align:center;padding:28px 24px 50px;border-top:1px solid var(--green-faint);font-size:.72rem;letter-spacing:2px;color:var(--green-faint);text-transform:uppercase; }
-    footer span { color:var(--green-dim); }
+    .hero-title {
+      font-family: "Cinzel", serif;
+      font-size: clamp(2.4rem, 6vw, 4.6rem);
+      line-height: 1.1;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: var(--glow);
+    }
 
-    /* STATUS BAR */
-    .statusbar { position:fixed;bottom:0;left:0;right:0;background:rgba(0,255,136,.06);border-top:1px solid var(--green-faint);padding:5px 20px;display:flex;justify-content:space-between;font-size:.68rem;letter-spacing:2px;color:var(--green-dim);z-index:100; }
-    .status-dot { display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);margin-right:6px;animation:blink 2s infinite; }
+    .hero-title span { color: var(--accent); }
 
-    @media(max-width:600px){
-      .topbar-nav{gap:10px}
-      .terminal-body{padding:20px 20px 28px}
-      .output-line.name-line{font-size:2.2rem}
-      .project-header{flex-direction:column}
-      .edu-card{grid-template-columns:1fr}
-      .edu-right{text-align:left}
+    .hero-sub {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 10px 18px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #04140b;
+      border-color: transparent;
+      box-shadow: var(--glow);
+      font-weight: 600;
+    }
+
+    .btn:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
+    .btn.primary:hover { color: #04140b; }
+
+    .hero-figure {
+      position: relative;
+      min-height: 320px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(10, 20, 14, 0.9));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .figure-silhouette {
+      position: absolute;
+      inset: 18% 20% 8% 20%;
+      border-radius: 120px 120px 20px 20px;
+      background: linear-gradient(180deg, rgba(10, 18, 14, 0.9), rgba(10, 18, 14, 0.4));
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .figure-sword {
+      position: absolute;
+      width: 6px;
+      height: 70%;
+      background: linear-gradient(180deg, rgba(220, 255, 240, 0.8), rgba(34, 197, 94, 0.2));
+      top: 12%;
+      left: 50%;
+      transform-origin: top;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
+    }
+
+    .figure-sword.one { transform: translateX(-50%) rotate(-18deg); }
+    .figure-sword.two { transform: translateX(-50%) rotate(18deg); }
+    .figure-sword.three { transform: translateX(-50%) rotate(0deg); height: 62%; top: 20%; }
+
+    section {
+      padding: 80px 0;
+      border-top: 1px solid var(--line);
+      background: var(--bg-alt);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .section-head h2 {
+      font-family: "Cinzel", serif;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+    }
+
+    .section-head span {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--muted);
+    }
+
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent), transparent);
+    }
+
+    .arc-title {
+      font-family: "Cinzel", serif;
+      color: var(--accent);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .arc-quote {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .grid-2 { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      font-family: "Cinzel", serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .card p { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill {
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 32px 0 60px;
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      background: var(--bg);
+    }
+
+    @media (max-width: 720px) {
+      .nav-links { gap: 12px; }
+      .hero { padding-top: 60px; }
     }
   </style>
 </head>
-<body>
-
-  <header class="topbar">
-    <div class="topbar-left"><span>~/</span>haricodes2970</div>
-    <nav class="topbar-nav">
-      <a href="#about">about</a>
-      <a href="#skills">skills</a>
-      <a href="#projects">projects</a>
-      <a href="#education">education</a>
-      <a href="#certifications">certs</a>
-      <a href="#contact">contact</a>
-    </nav>
+<body data-mode="zoro">
+  <header>
+    <div class="container nav">
+      <div class="brand"><span>zoro</span> portfolio</div>
+      <nav class="nav-links">
+        <a href="#home">home</a>
+        <a href="#about">about</a>
+        <a href="#skills">skills</a>
+        <a href="#projects">projects</a>
+        <a href="#certificates">certificates</a>
+        <a href="#hobbies">hobbies</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </div>
   </header>
 
-  <div class="hero">
-    <div class="terminal-window">
-      <div class="terminal-titlebar">
-        <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
-        <span class="terminal-title">bash — ~/portfolio — 80x24</span>
-      </div>
-      <div class="terminal-body">
-        <div><span class="prompt">guest@haricodes:~$</span> whoami</div>
-        <span class="output-line name-line l1">Srihari Prasad. S</span>
-        <br>
-        <div><span class="prompt">guest@haricodes:~$</span> cat tagline.txt</div>
-        <span class="output-line tag-line l2">"Bringing Ideas into Real World"</span>
-        <br>
-        <div><span class="prompt">guest@haricodes:~$</span> cat about.json</div>
-        <span class="output-line sub-line l3">&#123;</span>
-        <span class="output-line sub-line l4">&nbsp;&nbsp;"field"&nbsp;&nbsp;&nbsp;: "Artificial Intelligence &amp; Machine Learning",</span>
-        <span class="output-line sub-line l5">&nbsp;&nbsp;"college"&nbsp;: "Jyothy Institute of Technology – VTU, Bangalore",</span>
-        <span class="output-line sub-line l6">&nbsp;&nbsp;"status"&nbsp;&nbsp;: "6th Sem · AI/ML Undergrad · Full-Stack Dev",</span>
-        <span class="output-line sub-line l7">&nbsp;&nbsp;"stack"&nbsp;&nbsp;&nbsp;: ["Python", "MERN", "ML/DL", "RAG", "C++"],</span>
-        <span class="output-line sub-line l8">&nbsp;&nbsp;"open_to" : "Internships · Full-Time · Hackathons"</span>
-        <span class="output-line sub-line l9">&#125;</span>
-        <br>
-        <div><span class="prompt">guest@haricodes:~$</span> <span class="cursor-blink"></span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-header"><h2>About Me</h2></div>
-    <div class="about-grid">
-      <div class="about-card"><div class="card-label">Degree</div><div class="card-value">B.E — Artificial Intelligence &amp; Machine Learning</div></div>
-      <div class="about-card"><div class="card-label">College</div><div class="card-value">Jyothy Institute of Technology – VTU, Bangalore</div></div>
-      <div class="about-card"><div class="card-label">Status</div><div class="card-value">6th Semester · CGPA 7.02 (up to 5th Sem)</div></div>
-      <div class="about-card"><div class="card-label">Interests</div><div class="card-value">AI-Powered Products · Hackathons · Competitive Programming</div></div>
-    </div>
-    <div class="about-bio">
-      <div class="hi">Hello, World! 👾</div>
-      I'm Srihari Prasad — an AI &amp; ML undergrad who turns ideas into deployed, real-world products.
-      From architecting multi-role MERN platforms with payment integrations to building RAG-powered AI
-      systems, I thrive where intelligent systems meet great engineering. Currently in my 6th semester
-      and actively looking for opportunities to make an impact.
-    </div>
-  </section>
-
-  <!-- SKILLS -->
-  <section id="skills">
-    <div class="section-header"><h2>Skills</h2></div>
-    <div class="skills-grid">
-      <div class="skill-block">
-        <div class="skill-category">Languages</div>
-        <div class="skill-tags">
-          <span class="tag">Python</span><span class="tag">JavaScript</span><span class="tag">HTML/CSS</span>
-          <span class="tag">MySQL</span><span class="tag">MongoDB</span><span class="tag">C++</span>
-        </div>
-      </div>
-      <div class="skill-block">
-        <div class="skill-category">Frontend</div>
-        <div class="skill-tags">
-          <span class="tag">React.js</span><span class="tag">Vite</span><span class="tag">Tailwind CSS</span>
-          <span class="tag">Framer Motion</span><span class="tag">Context API</span>
-        </div>
-      </div>
-      <div class="skill-block">
-        <div class="skill-category">Backend</div>
-        <div class="skill-tags">
-          <span class="tag">Node.js</span><span class="tag">Express.js</span><span class="tag">REST API</span>
-          <span class="tag">JWT Auth</span><span class="tag">Middleware</span>
-        </div>
-      </div>
-      <div class="skill-block">
-        <div class="skill-category">AI / ML</div>
-        <div class="skill-tags">
-          <span class="tag">NumPy</span><span class="tag">Pandas</span><span class="tag">Scikit-learn</span>
-          <span class="tag">TensorFlow</span><span class="tag">OpenCV</span><span class="tag">LLMs</span>
-          <span class="tag">RAG</span><span class="tag">Prompt Engineering</span>
-        </div>
-      </div>
-      <div class="skill-block">
-        <div class="skill-category">Tools &amp; Cloud</div>
-        <div class="skill-tags">
-          <span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">Postman</span>
-          <span class="tag">VS Code</span><span class="tag">Cloudinary</span><span class="tag">MongoDB Atlas</span>
-          <span class="tag">Razorpay</span><span class="tag">Google OAuth</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects">
-    <div class="section-header"><h2>Projects</h2></div>
-    <div class="projects-list">
-
-      <div class="project-card">
-        <div class="project-header">
-          <div class="project-name">BookYourEvent</div>
-          <div class="project-meta">
-            <a class="project-link" href="https://bookyourevent.netlify.app" target="_blank" rel="noopener">↗ Live</a>
-            <span class="project-date">March 2026</span>
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="hero-eyebrow">three sword style intro</div>
+          <h1 class="hero-title">You have entered the domain of <span>Srihari</span></h1>
+          <p class="hero-sub">
+            Zoro inspired developer portfolio. I build full-stack products and AI systems with focus,
+            discipline, and precision. Replace the silhouette on the right with your photo when ready.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#about">Start the journey</a>
+            <a class="btn" href="#projects">View battle log</a>
           </div>
         </div>
-        <div class="project-stack">
-          <span class="stack-tag">MongoDB</span><span class="stack-tag">Express.js</span><span class="stack-tag">React</span>
-          <span class="stack-tag">Node.js</span><span class="stack-tag">Razorpay</span><span class="stack-tag">Cloudinary</span><span class="stack-tag">JWT</span>
+        <div class="hero-figure" aria-hidden="true">
+          <div class="figure-silhouette"></div>
+          <div class="figure-sword one"></div>
+          <div class="figure-sword two"></div>
+          <div class="figure-sword three"></div>
         </div>
-        <ul class="project-bullets">
-          <li>Architected a 3-role MERN platform (Booker, Venue Owner, Admin) with JWT auth, OTP email verification, and Google OAuth</li>
-          <li>Implemented dual booking system with instant booking &amp; bid-based negotiation; integrated Razorpay with server-side HMAC-SHA256 signature verification</li>
-          <li>Built real-time chat with message history and unread badges; automated booking expiry via Node.js cron job; 25+ protected API endpoints</li>
-          <li>Designed Cloudinary image pipeline; 3 role-specific dashboards with dark mode, revenue stats, and availability calendar</li>
-        </ul>
       </div>
+    </section>
 
-      <div class="project-card">
-        <div class="project-header">
-          <div class="project-name">Picy</div>
-          <div class="project-meta">
-            <a class="project-link" href="https://picy.netlify.app" target="_blank" rel="noopener">↗ Live</a>
-            <span class="project-date">March 2026</span>
+    <section id="about">
+      <div class="container">
+        <div class="section-head">
+          <h2>Origin Arc</h2>
+          <span>Who Am I</span>
+          <div class="section-divider"></div>
+        </div>
+        <div class="arc-title">Origin Arc</div>
+        <div class="arc-quote">Every legend starts somewhere.</div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Pirate Hunter -> Developer</h3>
+            <p>
+              AI and ML undergraduate focused on building production-ready systems that blend
+              smart automation with clean engineering.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Focus</h3>
+            <p>
+              Full-stack development, AI-assisted products, and relentless iteration for real-world impact.
+            </p>
           </div>
         </div>
-        <div class="project-stack">
-          <span class="stack-tag">React</span><span class="stack-tag">Vite</span><span class="stack-tag">Node.js</span>
-          <span class="stack-tag">Express</span><span class="stack-tag">MongoDB Atlas</span><span class="stack-tag">Cloudinary</span>
-          <span class="stack-tag">Netlify</span><span class="stack-tag">Render</span>
-        </div>
-        <ul class="project-bullets">
-          <li>Built a full-stack instant image &amp; text sharing app from scratch in under 4 hours — custom URLs, no login required</li>
-          <li>Integrated Cloudinary with automated 24-hour expiry via MongoDB TTL indexing; implemented PWA support for mobile/desktop</li>
-          <li>Built secret admin dashboard with real-time analytics &amp; charts; integrated Google AdSense and Search Console for monetization &amp; SEO</li>
-          <li>Deployed frontend on Netlify (CI/CD) and backend on Render with a self-healing keep-alive system</li>
-        </ul>
       </div>
+    </section>
 
-      <div class="project-card">
-        <div class="project-header">
-          <div class="project-name">Medical Chatbot</div>
-          <div class="project-meta">
-            <span class="project-link wip">⚙ In Progress</span>
-            <span class="project-date">2026</span>
+    <section id="skills">
+      <div class="container">
+        <div class="section-head">
+          <h2>Training Arc</h2>
+          <span>Skills</span>
+          <div class="section-divider"></div>
+        </div>
+        <div class="arc-title">Training Arc</div>
+        <div class="arc-quote">Abilities refined through battle and discipline.</div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Santoryu: UI Mastery</h3>
+            <div class="pill-row">
+              <span class="pill">HTML</span><span class="pill">CSS</span><span class="pill">JavaScript</span>
+              <span class="pill">React</span><span class="pill">Tailwind</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Haki: System Control</h3>
+            <div class="pill-row">
+              <span class="pill">Node</span><span class="pill">Express</span><span class="pill">MongoDB</span>
+              <span class="pill">JWT</span><span class="pill">REST</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>RAG: AI Edge</h3>
+            <div class="pill-row">
+              <span class="pill">Python</span><span class="pill">LLM</span><span class="pill">RAG</span>
+              <span class="pill">NLP</span><span class="pill">TensorFlow</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Tools</h3>
+            <div class="pill-row">
+              <span class="pill">Git</span><span class="pill">GitHub</span><span class="pill">Cloudinary</span>
+              <span class="pill">Razorpay</span><span class="pill">Postman</span>
+            </div>
           </div>
         </div>
-        <div class="project-stack">
-          <span class="stack-tag">Python</span><span class="stack-tag">LLM</span><span class="stack-tag">RAG</span><span class="stack-tag">NLP</span>
-        </div>
-        <ul class="project-bullets">
-          <li>Developing an AI medical chatbot using Retrieval-Augmented Generation (RAG) with a domain-specific LLM for accurate, context-aware medical responses</li>
-        </ul>
       </div>
+    </section>
 
-      <div class="project-card">
-        <div class="project-header">
-          <div class="project-name">VTU Smart Scheduler Chatbot</div>
-          <div class="project-meta">
-            <span class="project-link wip">⚙ In Progress</span>
-            <span class="project-date">Feb 2026</span>
+    <section id="projects">
+      <div class="container">
+        <div class="section-head">
+          <h2>Battle Arc</h2>
+          <span>Projects</span>
+          <div class="section-divider"></div>
+        </div>
+        <div class="arc-title">Battle Arc</div>
+        <div class="arc-quote">Missions completed under pressure.</div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>BookYourEvent</h3>
+            <p>High difficulty mission. Three role MERN platform with payments, chat, and dashboards.</p>
+          </div>
+          <div class="card">
+            <h3>Picy</h3>
+            <p>Fast build mission. Instant image and text sharing app with Cloudinary and PWA support.</p>
+          </div>
+          <div class="card">
+            <h3>Medical Chatbot</h3>
+            <p>In progress. RAG powered medical assistant with domain focused responses.</p>
+          </div>
+          <div class="card">
+            <h3>VTU Smart Scheduler</h3>
+            <p>In progress. AI chatbot for exam schedule queries and alerts.</p>
           </div>
         </div>
-        <div class="project-stack">
-          <span class="stack-tag">Python</span><span class="stack-tag">NLP</span><span class="stack-tag">LLM</span>
-          <span class="stack-tag">RAG</span><span class="stack-tag">Education AI</span>
+      </div>
+    </section>
+
+    <section id="certificates">
+      <div class="container">
+        <div class="section-head">
+          <h2>Achievement Arc</h2>
+          <span>Certificates</span>
+          <div class="section-divider"></div>
         </div>
-        <ul class="project-bullets">
-          <li>Built an AI chatbot enabling VTU students to query exam schedules and circulars in natural language</li>
-          <li>Integrated a real-time notification system for exam updates and circular alerts</li>
-        </ul>
+        <div class="arc-title">Achievement Arc</div>
+        <div class="arc-quote">Collected proof of skill and mastery.</div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Bizotic Full-Stack Training</h3>
+            <p>24-day intensive MERN program certification.</p>
+          </div>
+          <div class="card">
+            <h3>AI Using Prolog</h3>
+            <p>Online course certificate in progress.</p>
+          </div>
+          <div class="card">
+            <h3>Generative AI Workshop</h3>
+            <p>Hands-on workshop on GenAI tools and prompt engineering.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- EDUCATION -->
-  <section id="education">
-    <div class="section-header"><h2>Education</h2></div>
-    <div class="edu-list">
-      <div class="edu-card">
-        <div><div class="edu-degree">B.E — Artificial Intelligence &amp; Machine Learning</div><div class="edu-institution">Jyothy Institute of Technology – VTU, Bangalore</div></div>
-        <div class="edu-right"><div class="edu-year">2022 – Present</div><div class="edu-score">CGPA: 7.02</div></div>
+    <section id="hobbies">
+      <div class="container">
+        <div class="section-head">
+          <h2>Chill Zone</h2>
+          <span>Hobbies</span>
+          <div class="section-divider"></div>
+        </div>
+        <div class="arc-title">Chill Zone</div>
+        <div class="arc-quote">Balance builds endurance.</div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Training</h3>
+            <p>Strength and endurance workouts to stay sharp.</p>
+          </div>
+          <div class="card">
+            <h3>Anime and Manga</h3>
+            <p>Story driven inspiration and character design.</p>
+          </div>
+          <div class="card">
+            <h3>Competitive Coding</h3>
+            <p>Solving hard problems to keep skills battle ready.</p>
+          </div>
+          <div class="card">
+            <h3>Music</h3>
+            <p>Focus playlists that keep the flow state alive.</p>
+          </div>
+        </div>
       </div>
-      <div class="edu-card">
-        <div><div class="edu-degree">Class XII (PUC)</div><div class="edu-institution">Bharathi PU College of Excellence, Bharathi Nagar</div></div>
-        <div class="edu-right"><div class="edu-year">2023</div><div class="edu-score">72%</div></div>
-      </div>
-      <div class="edu-card">
-        <div><div class="edu-degree">Class X (SSLC)</div><div class="edu-institution">New Oxford Public School, Sriranga Patna</div></div>
-        <div class="edu-right"><div class="edu-year">2021</div><div class="edu-score">96.48%</div></div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CERTIFICATIONS -->
-  <section id="certifications">
-    <div class="section-header"><h2>Certifications</h2></div>
-    <div class="cert-list">
-      <div class="cert-item">
-        <div class="cert-icon">◈</div>
-        <div><div class="cert-name">Bizotic Certificate</div><div class="cert-note">24-Day Intensive Full-Stack Training Program · MERN Stack</div></div>
+    <section id="contact">
+      <div class="container">
+        <div class="section-head">
+          <h2>Final Destination</h2>
+          <span>Contact</span>
+          <div class="section-divider"></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Email</h3>
+            <p>srihariprasad7078@gmail.com</p>
+          </div>
+          <div class="card">
+            <h3>GitHub</h3>
+            <p>github.com/haricodes2970</p>
+          </div>
+          <div class="card">
+            <h3>LinkedIn</h3>
+            <p>linkedin.com/in/haricodes2970</p>
+          </div>
+          <div class="card">
+            <h3>Phone</h3>
+            <p>+91 7899853160</p>
+          </div>
+        </div>
       </div>
-      <div class="cert-item">
-        <div class="cert-icon">◈</div>
-        <div><div class="cert-name">Artificial Intelligence using Prolog</div><div class="cert-note">Online Course · In Progress</div></div>
-      </div>
-      <div class="cert-item">
-        <div class="cert-icon">◈</div>
-        <div><div class="cert-name">Generative AI Workshop</div><div class="cert-note">Hands-on exposure to GenAI tools, Prompt Engineering &amp; real-world AI application development</div></div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="section-header"><h2>Contact</h2></div>
-    <div class="contact-grid">
-      <a class="contact-item" href="mailto:srihariprasad7078@gmail.com">
-        <div class="contact-icon">✉</div>
-        <div><div class="contact-label">Email</div><div class="contact-value">srihariprasad7078@gmail.com</div></div>
-      </a>
-      <a class="contact-item" href="tel:+917899853160">
-        <div class="contact-icon">☎</div>
-        <div><div class="contact-label">Phone</div><div class="contact-value">+91 7899853160</div></div>
-      </a>
-      <a class="contact-item" href="https://github.com/haricodes2970" target="_blank" rel="noopener">
-        <div class="contact-icon">⌥</div>
-        <div><div class="contact-label">GitHub</div><div class="contact-value">github.com/haricodes2970</div></div>
-      </a>
-      <a class="contact-item" href="https://www.linkedin.com/in/haricodes2970" target="_blank" rel="noopener">
-        <div class="contact-icon">◈</div>
-        <div><div class="contact-label">LinkedIn</div><div class="contact-value">linkedin.com/in/haricodes2970</div></div>
-      </a>
-    </div>
-  </section>
-
-  <footer><p>built with <span>&lt;/&gt;</span> by <span>haricodes2970</span> · 2026</p></footer>
-
-  <div class="statusbar">
-    <div><span class="status-dot"></span>ONLINE</div>
-    <div>portfolio.v2.0 · AI &amp; ML · 4 projects</div>
-    <div id="clock"></div>
-  </div>
-
-  <script>
-    function updateClock() {
-      document.getElementById('clock').textContent =
-        new Date().toLocaleTimeString('en-GB', { hour12: false });
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-  </script>
+  <footer>
+    Built by Srihari Prasad - Zoro themed portfolio
+  </footer>
 </body>
 </html>
