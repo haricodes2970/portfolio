@@ -156,6 +156,28 @@
       transition: transform 0.08s ease;
     }
 
+    .ghost-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      display: none;
+    }
+
+    .ghost-layer.active { display: block; }
+
+    .ghost-cursor {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+      opacity: 0.5;
+      transform: translate(-50%, -50%);
+      transition: transform 1s ease;
+    }
+
     .click-slash {
       position: fixed;
       width: 70px;
@@ -237,9 +259,12 @@
     body[data-mode="calm"] .cursor-dot,
     body[data-mode="calm"] .cursor-trail,
     body[data-mode="calm"] .slash-overlay,
-    body[data-mode="calm"] .three-sword {
+    body[data-mode="calm"] .three-sword,
+    body[data-mode="calm"] .ghost-layer {
       display: none;
     }
+
+    body.low-perf .ghost-layer { display: none; }
 
     @keyframes slash {
       0% { transform: translateX(-120%) rotate(-8deg); opacity: 0; }
@@ -748,6 +773,7 @@
         <button class="btn small" id="perfToggle" type="button">Performance</button>
         <button class="btn small" id="voiceToggle" type="button">Voice Off</button>
         <button class="btn small" id="soundToggle" type="button">Sound Off</button>
+        <button class="btn small" id="coopToggle" type="button">Co-op Off</button>
       </div>
     </div>
   </header>
@@ -778,6 +804,11 @@
     <span></span><span></span><span></span>
   </div>
   <canvas id="swordCanvas" aria-hidden="true"></canvas>
+  <div class="ghost-layer" id="ghostLayer" aria-hidden="true">
+    <div class="ghost-cursor"></div>
+    <div class="ghost-cursor"></div>
+    <div class="ghost-cursor"></div>
+  </div>
 
   <main id="scene">
     <section id="home" class="hero">
@@ -1103,12 +1134,17 @@
       const perfToggle = document.getElementById('perfToggle');
       const voiceToggle = document.getElementById('voiceToggle');
       const soundToggle = document.getElementById('soundToggle');
+      const coopToggle = document.getElementById('coopToggle');
+      const ghostLayer = document.getElementById('ghostLayer');
       const savedMode = localStorage.getItem('mode');
       const savedPerf = localStorage.getItem('perf');
       const savedVoice = localStorage.getItem('voice');
       const savedSound = localStorage.getItem('sound');
+      const savedCoop = localStorage.getItem('coop');
       let voiceEnabled = savedVoice === 'on';
       let soundEnabled = savedSound === 'on';
+      let coopEnabled = savedCoop === 'on';
+      let coopInterval;
       if (savedMode === 'zoro' || savedMode === 'calm') {
         body.dataset.mode = savedMode;
       }
@@ -1131,6 +1167,36 @@
 
       function syncSoundLabel() {
         soundToggle.textContent = soundEnabled ? 'Sound On' : 'Sound Off';
+      }
+
+      function syncCoopLabel() {
+        coopToggle.textContent = coopEnabled ? 'Co-op On' : 'Co-op Off';
+      }
+
+      function moveGhosts() {
+        if (!ghostLayer) return;
+        ghostLayer.querySelectorAll('.ghost-cursor').forEach((ghost) => {
+          const x = Math.random() * window.innerWidth;
+          const y = Math.random() * window.innerHeight;
+          ghost.style.left = `${x}px`;
+          ghost.style.top = `${y}px`;
+        });
+      }
+
+      function updateCoop() {
+        if (!ghostLayer) return;
+        const allowed = coopEnabled && body.dataset.mode === 'zoro' && !body.classList.contains('low-perf');
+        if (!allowed) {
+          ghostLayer.classList.remove('active');
+          clearInterval(coopInterval);
+          coopInterval = null;
+          return;
+        }
+        ghostLayer.classList.add('active');
+        moveGhosts();
+        if (!coopInterval) {
+          coopInterval = setInterval(moveGhosts, 1200);
+        }
       }
 
       function speak(text) {
@@ -1164,17 +1230,21 @@
       syncPerfLabel();
       syncVoiceLabel();
       syncSoundLabel();
+      syncCoopLabel();
+      updateCoop();
       modeToggle.addEventListener('click', () => {
         const nextMode = body.dataset.mode === 'zoro' ? 'calm' : 'zoro';
         body.dataset.mode = nextMode;
         localStorage.setItem('mode', nextMode);
         syncModeLabel();
+        updateCoop();
       });
 
       perfToggle.addEventListener('click', () => {
         body.classList.toggle('low-perf');
         localStorage.setItem('perf', body.classList.contains('low-perf') ? 'low' : 'high');
         syncPerfLabel();
+        updateCoop();
       });
 
       voiceToggle.addEventListener('click', () => {
@@ -1190,6 +1260,13 @@
         soundEnabled = !soundEnabled;
         localStorage.setItem('sound', soundEnabled ? 'on' : 'off');
         syncSoundLabel();
+      });
+
+      coopToggle.addEventListener('click', () => {
+        coopEnabled = !coopEnabled;
+        localStorage.setItem('coop', coopEnabled ? 'on' : 'off');
+        syncCoopLabel();
+        updateCoop();
       });
     })();
 
